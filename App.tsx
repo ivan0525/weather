@@ -10,6 +10,7 @@ import {
 import SplashScreen from 'react-native-splash-screen'
 import IconFont from './src/components/Icon'
 import Geolocation from 'react-native-geolocation-service'
+import LinearGradient from 'react-native-linear-gradient'
 import axios from 'axios'
 import WeatherIcon from './src/components/WeatherIcon'
 const App: FC = () => {
@@ -83,14 +84,21 @@ const App: FC = () => {
   }, [])
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor="transparent" />
-      <SafeAreaView>
-        <View>
-          <IconFont name="search" size={40} color="#e5e5e5" />
-          <Text>hahahh</Text>
-          <WeatherIcon code="100n" style={{ width: 10, height: 10 }} />
-        </View>
-      </SafeAreaView>
+      <LinearGradient
+        colors={['#464e96', '#547ea9', '#409aaf']}
+        style={{
+          flex: 1
+        }}
+      >
+        <StatusBar barStyle="dark-content" backgroundColor="transparent" />
+        <SafeAreaView>
+          <View>
+            <IconFont name="search" size={40} color="#e5e5e5" />
+            <Text>hahahh</Text>
+            <WeatherIcon code="100n" />
+          </View>
+        </SafeAreaView>
+      </LinearGradient>
     </>
   )
 }
