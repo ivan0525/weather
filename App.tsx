@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -6,20 +6,20 @@ import {
   PermissionsAndroid,
   Platform,
   StatusBar
-} from 'react-native';
-import SplashScreen from 'react-native-splash-screen';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import IconFont from './src/components/Icon';
-import Geolocation from 'react-native-geolocation-service';
-const myIcon = <Icon name="rocket" size={30} color="#900" />;
-import axios from 'axios';
-import WeatherIcon from './src/components/WeatherIcon';
+} from 'react-native'
+import SplashScreen from 'react-native-splash-screen'
+import Icon from 'react-native-vector-icons/FontAwesome'
+import IconFont from './src/components/Icon'
+import Geolocation from 'react-native-geolocation-service'
+const myIcon = <Icon name="rocket" size={30} color="#900" />
+import axios from 'axios'
+import WeatherIcon from './src/components/WeatherIcon'
 const App: FC = () => {
-  const [weatherInfo, setWeatherInfo] = useState({ info: {} });
-  const [locationInfo, setLocationInfo] = useState({});
+  const [weatherInfo, setWeatherInfo] = useState({ info: {} })
+  const [locationInfo, setLocationInfo] = useState({})
   // ios平台
   if (Platform.OS === 'ios') {
-    Geolocation.getCurrentPosition(location => console.log(location));
+    Geolocation.getCurrentPosition((location) => console.log(location))
   } else {
     // 安卓平台
     const requestLocationPermission = async () => {
@@ -33,59 +33,59 @@ const App: FC = () => {
             buttonNegative: '取消',
             buttonPositive: '确定'
           }
-        );
+        )
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          Geolocation.getCurrentPosition(location => console.log(location));
-          console.log('定位授权成功');
+          Geolocation.getCurrentPosition((location) => console.log(location))
+          console.log('定位授权成功')
         } else {
-          console.log('定位授权失败');
+          console.log('定位授权失败')
         }
       } catch (err) {
-        console.warn(err);
+        console.warn(err)
       }
-    };
+    }
     // 检查是否已经获得定位权限
     PermissionsAndroid.check(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
     )
-      .then(isGranted => {
+      .then((isGranted) => {
         if (isGranted) {
           Geolocation.getCurrentPosition(
-            location => {
-              console.log(location);
+            (location) => {
+              console.log(location)
               // setLocationInfo(location.coords);
             },
-            error => {
-              console.log(error);
+            (error) => {
+              console.log(error)
             },
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-          );
+          )
         } else {
-          requestLocationPermission();
+          requestLocationPermission()
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
   useEffect(() => {
     const getData = async () => {
       const { data } = await axios(
         'https://free-api.heweather.net/s6/weather/now?location=beijing&key=67bfac752701474db805c55652b12a83'
-      );
-      setWeatherInfo(data);
-    };
-    getData();
-  }, []);
-  console.log(weatherInfo);
+      )
+      setWeatherInfo(data)
+    }
+    getData()
+  }, [])
+  console.log(weatherInfo)
 
   useEffect(() => {
-    SplashScreen.hide();
-  }, []);
+    SplashScreen.hide()
+  }, [])
   return (
     <>
-      {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
+      <StatusBar barStyle="dark-content" backgroundColor="transparent" />
       <SafeAreaView>
         <View>
           {myIcon}
@@ -95,7 +95,7 @@ const App: FC = () => {
         </View>
       </SafeAreaView>
     </>
-  );
-};
+  )
+}
 
-export default App;
+export default App

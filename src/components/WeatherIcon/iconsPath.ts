@@ -1,5 +1,5 @@
 export interface IconPath {
-  [key: string]: any;
+  [key: string]: any
 }
 export const iconPath: IconPath = {
   '100': require('./images/100.png'),
@@ -76,4 +76,4 @@ export const iconPath: IconPath = {
   '900': require('./images/900.png'),
   '901': require('./images/901.png'),
   '999': require('./images/999.png')
-};
+}
