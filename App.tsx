@@ -8,10 +8,8 @@ import {
   StatusBar
 } from 'react-native'
 import SplashScreen from 'react-native-splash-screen'
-import Icon from 'react-native-vector-icons/FontAwesome'
 import IconFont from './src/components/Icon'
 import Geolocation from 'react-native-geolocation-service'
-const myIcon = <Icon name="rocket" size={30} color="#900" />
 import axios from 'axios'
 import WeatherIcon from './src/components/WeatherIcon'
 const App: FC = () => {
@@ -88,7 +86,6 @@ const App: FC = () => {
       <StatusBar barStyle="dark-content" backgroundColor="transparent" />
       <SafeAreaView>
         <View>
-          {myIcon}
           <IconFont name="search" size={40} color="#e5e5e5" />
           <Text>hahahh</Text>
           <WeatherIcon code="100n" style={{ width: 10, height: 10 }} />
