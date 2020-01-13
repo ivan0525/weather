@@ -1,7 +1,7 @@
 package com.weather;
-
+import android.os.Bundle; // 配置SplashScreen
 import com.facebook.react.ReactActivity;
-
+import org.devio.rn.splashscreen.SplashScreen; // 配置SplashScreen
 public class MainActivity extends ReactActivity {
 
   /**
@@ -12,4 +12,10 @@ public class MainActivity extends ReactActivity {
   protected String getMainComponentName() {
     return "weather";
   }
+
+ @Override
+ protected void onCreate(Bundle savedInstanceState) {
+   SplashScreen.show(this);  // 配置SplashScreen
+   super.onCreate(savedInstanceState);
+ }
 }

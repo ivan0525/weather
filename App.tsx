@@ -4,18 +4,22 @@ import {
   Text,
   SafeAreaView,
   PermissionsAndroid,
-  Platform
+  Platform,
+  StatusBar
 } from 'react-native';
+import SplashScreen from 'react-native-splash-screen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconFont from './src/components/Icon';
-import Geolocation from '@react-native-community/geolocation';
+import Geolocation from 'react-native-geolocation-service';
 const myIcon = <Icon name="rocket" size={30} color="#900" />;
 import axios from 'axios';
+import WeatherIcon from './src/components/WeatherIcon';
 const App: FC = () => {
   const [weatherInfo, setWeatherInfo] = useState({ info: {} });
+  const [locationInfo, setLocationInfo] = useState({});
   // ios平台
   if (Platform.OS === 'ios') {
-    Geolocation.getCurrentPosition(info => console.log(info));
+    Geolocation.getCurrentPosition(location => console.log(location));
   } else {
     // 安卓平台
     const requestLocationPermission = async () => {
@@ -30,8 +34,8 @@ const App: FC = () => {
             buttonPositive: '确定'
           }
         );
-        console.log(granted);
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          Geolocation.getCurrentPosition(location => console.log(location));
           console.log('定位授权成功');
         } else {
           console.log('定位授权失败');
@@ -40,7 +44,29 @@ const App: FC = () => {
         console.warn(err);
       }
     };
-    requestLocationPermission();
+    // 检查是否已经获得定位权限
+    PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    )
+      .then(isGranted => {
+        if (isGranted) {
+          Geolocation.getCurrentPosition(
+            location => {
+              console.log(location);
+              // setLocationInfo(location.coords);
+            },
+            error => {
+              console.log(error);
+            },
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+          );
+        } else {
+          requestLocationPermission();
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   useEffect(() => {
@@ -48,20 +74,27 @@ const App: FC = () => {
       const { data } = await axios(
         'https://free-api.heweather.net/s6/weather/now?location=beijing&key=67bfac752701474db805c55652b12a83'
       );
-      console.log(data);
       setWeatherInfo(data);
     };
     getData();
   }, []);
   console.log(weatherInfo);
+
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
   return (
-    <SafeAreaView>
-      <View>
-        {myIcon}
-        <IconFont name="search" size={40} color="#e5e5e5" />
-        <Text>hahahh</Text>
-      </View>
-    </SafeAreaView>
+    <>
+      {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
+      <SafeAreaView>
+        <View>
+          {myIcon}
+          <IconFont name="search" size={40} color="#e5e5e5" />
+          <Text>hahahh</Text>
+          <WeatherIcon code="100n" style={{ width: 10, height: 10 }} />
+        </View>
+      </SafeAreaView>
+    </>
   );
 };
 
