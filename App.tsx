@@ -1,18 +1,7 @@
-import React, { FC, useState, useEffect } from 'react'
-import {
-  View,
-  Text,
-  SafeAreaView,
-  PermissionsAndroid,
-  Platform,
-  StatusBar
-} from 'react-native'
+import React, { FC, useEffect } from 'react'
+import { StatusBar } from 'react-native'
 import WeatherNavigator from './src/navigation/index'
 import SplashScreen from 'react-native-splash-screen'
-import IconFont from './src/components/Icon'
-import LinearGradient from 'react-native-linear-gradient'
-import axios from 'axios'
-import WeatherIcon from './src/components/WeatherIcon'
 
 const App: FC = () => {
   // const [weatherInfo, setWeatherInfo] = useState({ info: {} })

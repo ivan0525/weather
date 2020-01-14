@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, PermissionsAndroid } from 'react-native'
+import Geolocation from '@react-native-community/geolocation'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Utils from '../../utils/index'
 import { getNowWeather } from './../../api'
@@ -10,15 +11,18 @@ export interface Istate {
 export default class Home extends Component<Istate> {
   state: Istate = {
     basic: {},
-    now: {}
+    now: {},
+    location: {}
   }
   componentDidMount() {
-    this.requestData()
+    this.getPosition()
   }
   async requestData() {
     try {
+      console.log(this.state)
+      const { longitude, latitude } = this.state.location
       const { data } = await getNowWeather({
-        location: 'beijing'
+        location: `${longitude},${latitude}`
       })
       const { basic, now } = data.HeWeather6[0]
       this.setState({
@@ -29,6 +33,34 @@ export default class Home extends Component<Istate> {
       console.log(err)
     }
   }
+
+  // 获取当前位置
+  async getPosition() {
+    try {
+      const granted = await Utils.requestLocationPermission()
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        Geolocation.getCurrentPosition(
+          (location) => {
+            this.setState({
+              location: location.coords
+            })
+            this.requestData()
+            console.log(location)
+          },
+          (err) => {
+            console.log(err)
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 5000
+          }
+        )
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   render() {
     console.log(this.state)
     const { basic, now } = this.state
