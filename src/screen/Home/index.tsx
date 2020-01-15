@@ -20,9 +20,10 @@ export default class Home extends Component<Istate> {
   async requestData() {
     try {
       console.log(this.state)
-      const { longitude, latitude } = this.state.location
+      // const { longitude, latitude } = this.state.location
       const { data } = await getNowWeather({
-        location: `${longitude},${latitude}`
+        // location: `${longitude},${latitude}`
+        location: 'shenzhen'
       })
       const { basic, now } = data.HeWeather6[0]
       this.setState({
