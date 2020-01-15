@@ -1,14 +1,24 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, PermissionsAndroid } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  PermissionsAndroid,
+  TouchableOpacity
+} from 'react-native'
 import Geolocation from '@react-native-community/geolocation'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import ContentArea from './../../widget/ContentArea'
+import LinearGradient from 'react-native-linear-gradient'
 import Utils from '../../utils/index'
 import { getNowWeather } from './../../api'
-import LinearGradient from 'react-native-linear-gradient'
 export interface Istate {
   [key: string]: any
 }
-export default class Home extends Component<Istate> {
+export interface Iprops {
+  [key: string]: any
+}
+export default class Home extends Component<Iprops, Istate> {
   state: Istate = {
     basic: {},
     now: {},
@@ -63,7 +73,7 @@ export default class Home extends Component<Istate> {
   }
 
   render() {
-    console.log(this.state)
+    const { navigation } = this.props
     const { basic, now } = this.state
     return (
       <LinearGradient
@@ -72,25 +82,39 @@ export default class Home extends Component<Istate> {
           flex: 1
         }}
       >
-        <View style={styles.homeContainer}>
+        <ContentArea style={{ alignItems: 'center' }}>
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('AddCity')}
+              activeOpacity={1}
+            >
+              <MaterialCommunityIcon name="menu" size={25} color="#e5e5e5" />
+            </TouchableOpacity>
+            <MaterialCommunityIcon name="share" size={25} color="#e5e5e5" />
+          </View>
           <View style={styles.cityName}>
             <Text style={styles.cityNameText}>{basic.location}</Text>
           </View>
-          <Icon name="weather-sunny" style={{ fontSize: 50 }} color="white" />
+          <MaterialCommunityIcon
+            name="weather-sunny"
+            style={{ fontSize: 50 }}
+            color="white"
+          />
           <View>
             <Text style={{ fontSize: 40, color: 'white' }}>{now.tmp}℃</Text>
           </View>
-        </View>
+        </ContentArea>
       </LinearGradient>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  homeContainer: {
-    flex: 1,
-    alignItems: 'center',
-    marginTop: Utils.getAppBarHeight()
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 5,
+    width: '100%'
   },
   cityName: {
     width: '100%',

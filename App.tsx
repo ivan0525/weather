@@ -76,26 +76,11 @@ const App: FC = () => {
   return (
     <>
       <StatusBar
-        barStyle="dark-content"
+        barStyle="light-content"
         translucent={true}
         backgroundColor="transparent"
       />
       <WeatherNavigator />
-      {/* <LinearGradient
-        colors={['#464e96', '#547ea9', '#409aaf']}
-        style={{
-          flex: 1
-        }}
-      >
-        <StatusBar barStyle="dark-content" backgroundColor="transparent" />
-        <SafeAreaView>
-          <View>
-            <IconFont name="search" size={40} color="#e5e5e5" />
-            <Text>hahahh</Text>
-            <WeatherIcon code="100n" />
-          </View>
-        </SafeAreaView>
-      </LinearGradient> */}
     </>
   )
 }

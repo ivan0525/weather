@@ -5,6 +5,8 @@
         <!-- Customize your theme here. -->
         <!--设置透明背景-->
         <item name="android:windowIsTranslucent">true</item>
+        <!-- 解决modal不能全屏（statusBar没有覆盖） -->
+        <item name="android:windowFullscreen">true</item>
     </style>
 
 </resources>
