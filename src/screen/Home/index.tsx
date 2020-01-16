@@ -88,9 +88,18 @@ export default class Home extends Component<Iprops, Istate> {
               onPress={() => navigation.navigate('AddCity')}
               activeOpacity={1}
             >
-              <MaterialCommunityIcon name="menu" size={25} color="#e5e5e5" />
+              <MaterialCommunityIcon name="menu" size={22} color="#e5e5e5" />
             </TouchableOpacity>
-            <MaterialCommunityIcon name="share" size={25} color="#e5e5e5" />
+            <TouchableOpacity
+              onPress={() => navigation.openDrawer()}
+              activeOpacity={1}
+            >
+              <MaterialCommunityIcon
+                name="settings-outline"
+                size={22}
+                color="#e5e5e5"
+              />
+            </TouchableOpacity>
           </View>
           <View style={styles.cityName}>
             <Text style={styles.cityNameText}>{basic.location}</Text>
@@ -113,6 +122,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 5,
     paddingHorizontal: 5,
     width: '100%'
   },

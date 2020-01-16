@@ -1,4 +1,5 @@
 import React, { FC, useEffect } from 'react'
+import 'react-native-gesture-handler'
 import { StatusBar } from 'react-native'
 import WeatherNavigator from './src/navigation/index'
 import SplashScreen from 'react-native-splash-screen'

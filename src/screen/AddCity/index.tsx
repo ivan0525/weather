@@ -7,8 +7,7 @@ import {
   Alert,
   TextInput,
   TouchableOpacity,
-  Dimensions,
-  Platform
+  Dimensions
 } from 'react-native'
 import ContentArea from '../../widget/ContentArea'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -92,18 +91,7 @@ export default class AddCity extends Component<Iprops, Istate> {
             <Text>Hello!</Text>
           </View>
         </Modal>
-        <View style={{ marginTop: 100 }} />
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => this.setModalVisible(true)}
-        >
-          <MaterialCommunityIcon
-            name="delete-outline"
-            size={25}
-            style={{ color: '#e4e4e4' }}
-          />
-        </TouchableOpacity>
-        {/* <ContentArea style={{ marginHorizontal: 15 }}>
+        <ContentArea style={{ marginHorizontal: 15 }}>
           <View style={styles.searchBox}>
             <View style={{ flex: 1, height: 30 }}>
               <TextInput
@@ -153,7 +141,7 @@ export default class AddCity extends Component<Iprops, Istate> {
               ))}
             </View>
           </View>
-        </ContentArea> */}
+        </ContentArea>
       </View>
     )
   }
