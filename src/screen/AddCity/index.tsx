@@ -35,7 +35,7 @@ export interface Icity {
   type: string
 }
 export default class AddCity extends Component<Iprops, Istate> {
-  timer: number
+  timer: number = -1
   state: Istate = {
     hotCities: [],
     modalVisible: false,
