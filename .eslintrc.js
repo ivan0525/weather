@@ -5,6 +5,7 @@ module.exports = {
     'comma-dangle': ['error', 'never'],
     semi: ['error', 'never'],
     'react-native/no-inline-styles': 0,
-    '@typescript-eslint/no-unused-vars': 1
+    '@typescript-eslint/no-unused-vars': 1,
+    'consistent-this': 0
   }
 }
