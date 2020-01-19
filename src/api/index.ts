@@ -13,7 +13,7 @@ export const getNowWeather = (params: any = {}) => {
 
 // 通过关键字查询城市（支持模糊查询）
 export const getCityByKeyWord = (params: any = {}) => {
-  params = { ...params, ...{ key: WEB_KEY } }
+  params = { ...params, ...{ key: WEB_KEY, group: 'cn' } }
   return request({
     url: `${CITY_BASE_URL}/find`,
     method: 'GET',

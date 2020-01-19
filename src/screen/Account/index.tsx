@@ -8,8 +8,8 @@ export default class Account extends Component {
   }
   render() {
     return (
-      <View style={{ flex: 1, marginTop: 30 }}>
-        <Text>asdasdasdsadas</Text>
+      <View>
+        <Text>console.log</Text>
       </View>
     )
   }

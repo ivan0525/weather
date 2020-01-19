@@ -12,14 +12,16 @@ import {
 import ContentArea from '../../widget/ContentArea'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Modal from 'react-native-modal'
-import Utils from '../../utils/index'
-import { getHotCities } from './../../api'
+import Utils, { debounce } from '../../utils/index'
+import { setCityList } from '../../store/actions'
+import { getHotCities, getCityByKeyWord } from './../../api'
 export interface Iprops {
   [key: string]: any
 }
 export interface Istate {
   hotCities: Icity[]
   modalVisible: boolean
+  inputText: string
 }
 export interface Icity {
   cid: string
@@ -33,9 +35,11 @@ export interface Icity {
   type: string
 }
 export default class AddCity extends Component<Iprops, Istate> {
+  timer: number
   state: Istate = {
     hotCities: [],
-    modalVisible: false
+    modalVisible: false,
+    inputText: ''
   }
 
   componentDidMount() {
@@ -68,6 +72,40 @@ export default class AddCity extends Component<Iprops, Istate> {
     this.setState({ modalVisible: visible })
   }
 
+  // 更新文本框的值
+  handleChange(text: string) {
+    if (text) {
+      this.setState({ inputText: text })
+      clearTimeout(this.timer)
+      this.timer = setTimeout(async () => {
+        try {
+          const { data } = await getCityByKeyWord({ location: text })
+          console.log(data)
+        } catch (err) {
+          console.log(err)
+        }
+      }, 1000)
+    } else {
+      this.setState({ inputText: '' })
+    }
+  }
+
+  // 模糊查询
+  async searchCity(keyWord: string) {
+    console.log(keyWord)
+    if (keyWord) {
+      this.setState({ inputText: keyWord })
+      try {
+        const { data } = await getCityByKeyWord({ location: keyWord })
+        console.log(data)
+      } catch (err) {
+        console.log(err)
+      }
+    } else {
+      this.setState({ inputText: '' })
+    }
+  }
+
   render() {
     const { navigation } = this.props
     const { hotCities } = this.state
@@ -77,6 +115,7 @@ export default class AddCity extends Component<Iprops, Istate> {
       : require('react-native-extra-dimensions-android').get(
           'REAL_WINDOW_HEIGHT'
         )
+    const { inputText } = this.state
     return (
       <View style={{ flex: 1 }}>
         <StatusBar barStyle="dark-content" />
@@ -95,8 +134,13 @@ export default class AddCity extends Component<Iprops, Istate> {
           <View style={styles.searchBox}>
             <View style={{ flex: 1, height: 30 }}>
               <TextInput
+                enablesReturnKeyAutomatically
                 style={styles.textInput}
-                onChangeText={(text) => console.log(text)}
+                value={inputText}
+                onSubmitEditing={(e) =>
+                  console.log('--------------', this.state.inputText)
+                }
+                onChangeText={this.handleChange.bind(this)}
               />
             </View>
             <TouchableOpacity
@@ -150,7 +194,8 @@ export default class AddCity extends Component<Iprops, Istate> {
 const styles = StyleSheet.create({
   searchBox: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: 10
   },
   textInput: {
     paddingVertical: 0,
