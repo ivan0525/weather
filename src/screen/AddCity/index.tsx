@@ -7,6 +7,8 @@ import {
   Alert,
   TextInput,
   TouchableOpacity,
+  FlatList,
+  AsyncStorage,
   Dimensions
 } from 'react-native'
 import ContentArea from '../../widget/ContentArea'
@@ -14,7 +16,8 @@ import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIc
 import Modal from 'react-native-modal'
 import Utils, { debounce } from '../../utils/index'
 import { setCityList } from '../../store/actions'
-import { getHotCities, getCityByKeyWord } from './../../api'
+import { getHotCities, getCityByKeyWord } from '../../api'
+import { ScrollView } from 'react-native'
 export interface Iprops {
   [key: string]: any
 }
@@ -22,6 +25,7 @@ export interface Istate {
   hotCities: Icity[]
   modalVisible: boolean
   inputText: string
+  matchedCities: Icity[]
 }
 export interface Icity {
   cid: string
@@ -39,7 +43,8 @@ export default class AddCity extends Component<Iprops, Istate> {
   state: Istate = {
     hotCities: [],
     modalVisible: false,
-    inputText: ''
+    inputText: '',
+    matchedCities: []
   }
 
   componentDidMount() {
@@ -74,48 +79,51 @@ export default class AddCity extends Component<Iprops, Istate> {
 
   // 更新文本框的值
   handleChange(text: string) {
-    if (text) {
+    if (text.trim()) {
       this.setState({ inputText: text })
       clearTimeout(this.timer)
       this.timer = setTimeout(async () => {
         try {
-          const { data } = await getCityByKeyWord({ location: text })
-          console.log(data)
+          const {
+            data: { HeWeather6 }
+          } = await getCityByKeyWord({ location: text })
+          const { status, basic } = HeWeather6[0]
+          if (status === 'ok') {
+            this.setState({
+              matchedCities: basic
+            })
+          }
         } catch (err) {
           console.log(err)
         }
-      }, 1000)
+      }, 300)
     } else {
       this.setState({ inputText: '' })
     }
   }
 
-  // 模糊查询
-  async searchCity(keyWord: string) {
-    console.log(keyWord)
-    if (keyWord) {
-      this.setState({ inputText: keyWord })
-      try {
-        const { data } = await getCityByKeyWord({ location: keyWord })
-        console.log(data)
-      } catch (err) {
-        console.log(err)
-      }
-    } else {
-      this.setState({ inputText: '' })
+  // 选择查询出的城市
+  async handleConfirmCity(cityInfo: Icity) {
+    try {
+      const data = AsyncStorage.setItem(
+        'searchHistory',
+        JSON.stringify([cityInfo])
+      )
+      console.log(data)
+    } catch (err) {
+      console.log(err)
     }
   }
 
   render() {
     const { navigation } = this.props
-    const { hotCities } = this.state
+    const { hotCities, inputText, matchedCities } = this.state
     const deviceWidth = Dimensions.get('window').width
     const deviceHeight = Utils.isIos()
       ? Dimensions.get('window').height
       : require('react-native-extra-dimensions-android').get(
           'REAL_WINDOW_HEIGHT'
         )
-    const { inputText } = this.state
     return (
       <View style={{ flex: 1 }}>
         <StatusBar barStyle="dark-content" />
@@ -150,41 +158,70 @@ export default class AddCity extends Component<Iprops, Istate> {
               <Text>取消</Text>
             </TouchableOpacity>
           </View>
-          <View style={{ marginBottom: 15 }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}
-            >
-              <Text style={styles.labelText}>搜索记录</Text>
-              <TouchableOpacity
-                activeOpacity={1}
-                onPress={() => this.setModalVisible(true)}
-              >
-                <MaterialCommunityIcon
-                  name="delete-outline"
-                  size={25}
-                  style={{ color: '#e4e4e4' }}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View>
-            <Text style={styles.labelText}>推荐城市</Text>
-            <View style={styles.cityList}>
-              {hotCities.map((city) => (
-                <TouchableOpacity
-                  style={styles.city}
-                  key={city.cid}
-                  onPress={() => console.log(1)}
+          {inputText ? (
+            <ScrollView alwaysBounceVertical>
+              <FlatList
+                data={matchedCities}
+                renderItem={({ item }) => (
+                  <View
+                    style={{
+                      borderBottomWidth: 0.5,
+                      borderColor: '#e5e5e5',
+                      paddingTop: 4
+                    }}
+                  >
+                    <TouchableOpacity
+                      activeOpacity={1}
+                      onPress={this.handleConfirmCity.bind(this, item)}
+                    >
+                      <Text>
+                        {item.location},{item.parent_city},{item.admin_area},
+                        {item.cnty}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            </ScrollView>
+          ) : (
+            <View>
+              <View style={{ marginBottom: 15 }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}
                 >
-                  <Text>{city.location}</Text>
-                </TouchableOpacity>
-              ))}
+                  <Text style={styles.labelText}>搜索记录</Text>
+                  <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => this.handleDelSearchRecord()}
+                  >
+                    <MaterialCommunityIcon
+                      name="delete-outline"
+                      size={25}
+                      style={{ color: '#e4e4e4' }}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View>
+                <Text style={styles.labelText}>推荐城市</Text>
+                <View style={styles.cityList}>
+                  {hotCities.map((city) => (
+                    <TouchableOpacity
+                      style={styles.city}
+                      key={city.cid}
+                      onPress={() => console.log(1)}
+                    >
+                      <Text>{city.location}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
             </View>
-          </View>
+          )}
         </ContentArea>
       </View>
     )
