@@ -8,14 +8,11 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
-  AsyncStorage,
-  Dimensions
+  AsyncStorage
 } from 'react-native'
 import ContentArea from '../../widget/ContentArea'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import Modal from 'react-native-modal'
-import Utils, { debounce } from '../../utils/index'
-import { setCityList } from '../../store/actions'
+// import { setCityList } from '../../store/actions'
 import { getHotCities, getCityByKeyWord } from '../../api'
 import { ScrollView } from 'react-native'
 export interface Iprops {
@@ -118,34 +115,17 @@ export default class AddCity extends Component<Iprops, Istate> {
   render() {
     const { navigation } = this.props
     const { hotCities, inputText, matchedCities } = this.state
-    const deviceWidth = Dimensions.get('window').width
-    const deviceHeight = Utils.isIos()
-      ? Dimensions.get('window').height
-      : require('react-native-extra-dimensions-android').get(
-          'REAL_WINDOW_HEIGHT'
-        )
     return (
       <View style={{ flex: 1 }}>
         <StatusBar barStyle="dark-content" />
-        <Modal
-          style={{ margin: 0 }}
-          isVisible={this.state.modalVisible}
-          deviceWidth={deviceWidth}
-          deviceHeight={deviceHeight}
-          onBackdropPress={() => this.setState({ modalVisible: false })}
-        >
-          <View style={{ flex: 1 }}>
-            <Text>Hello!</Text>
-          </View>
-        </Modal>
         <ContentArea style={{ marginHorizontal: 15 }}>
           <View style={styles.searchBox}>
-            <View style={{ flex: 1, height: 30 }}>
+            <View style={{ flex: 1, height: 40 }}>
               <TextInput
                 enablesReturnKeyAutomatically
                 style={styles.textInput}
                 value={inputText}
-                onSubmitEditing={(e) =>
+                onSubmitEditing={() =>
                   console.log('--------------', this.state.inputText)
                 }
                 onChangeText={this.handleChange.bind(this)}
@@ -235,9 +215,9 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   textInput: {
-    paddingVertical: 0,
+    paddingVertical: 10,
     paddingHorizontal: 6,
-    fontSize: 12,
+    fontSize: 16,
     marginRight: 10,
     borderColor: '#e5e5e5',
     borderWidth: 1,

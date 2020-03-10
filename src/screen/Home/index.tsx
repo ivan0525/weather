@@ -9,9 +9,9 @@ import {
 import Geolocation from '@react-native-community/geolocation'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import ContentArea from './../../widget/ContentArea'
-import LinearGradient from 'react-native-linear-gradient'
 import Utils from '../../utils/index'
 import { getNowWeather } from './../../api'
+import WeatherIcon from '../../components/WeatherIcon'
 export interface Istate {
   [key: string]: any
 }
@@ -29,11 +29,9 @@ export default class Home extends Component<Iprops, Istate> {
   }
   async requestData() {
     try {
-      console.log(this.state)
-      // const { longitude, latitude } = this.state.location
+      const { longitude, latitude } = this.state.location
       const { data } = await getNowWeather({
-        // location: `${longitude},${latitude}`
-        location: 'shenzhen'
+        location: `${longitude},${latitude}`
       })
       const { basic, now } = data.HeWeather6[0]
       this.setState({
@@ -76,19 +74,19 @@ export default class Home extends Component<Iprops, Istate> {
     const { navigation } = this.props
     const { basic, now } = this.state
     return (
-      <LinearGradient
-        colors={['#464e96', '#547ea9', '#409aaf']}
+      <View
         style={{
-          flex: 1
+          flex: 1,
+          backgroundColor: '#f0f5e5'
         }}
       >
-        <ContentArea style={{ alignItems: 'center' }}>
+        <ContentArea style={{ flex: 1, alignItems: 'center' }}>
           <View style={styles.header}>
             <TouchableOpacity
               onPress={() => navigation.navigate('AddCity')}
               activeOpacity={1}
             >
-              <MaterialCommunityIcon name="menu" size={22} color="#e5e5e5" />
+              <MaterialCommunityIcon name="menu" size={25} color="#444" />
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => navigation.openDrawer()}
@@ -96,24 +94,20 @@ export default class Home extends Component<Iprops, Istate> {
             >
               <MaterialCommunityIcon
                 name="settings-outline"
-                size={22}
-                color="#e5e5e5"
+                size={25}
+                color="#444"
               />
             </TouchableOpacity>
           </View>
           <View style={styles.cityName}>
             <Text style={styles.cityNameText}>{basic.location}</Text>
           </View>
-          <MaterialCommunityIcon
-            name="weather-sunny"
-            style={{ fontSize: 50 }}
-            color="white"
-          />
+          <WeatherIcon code={now.cond_code} />
           <View>
-            <Text style={{ fontSize: 40, color: 'white' }}>{now.tmp}℃</Text>
+            <Text style={{ fontSize: 40, color: '#555' }}>{now.tmp}℃</Text>
           </View>
         </ContentArea>
-      </LinearGradient>
+      </View>
     )
   }
 }
@@ -123,7 +117,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 5,
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
     width: '100%'
   },
   cityName: {
@@ -133,6 +127,6 @@ const styles = StyleSheet.create({
   cityNameText: {
     textAlign: 'center',
     fontSize: 30,
-    color: 'white'
+    color: '#555'
   }
 })
